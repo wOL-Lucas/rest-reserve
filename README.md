@@ -9,3 +9,5 @@
   <img height="65px" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original-wordmark.svg" alt="docker icon"/>
 </div>
 
+### Uma rede social de restaurantes.
+Descubra uma nova forma de explorar os melhores restaurantes com nossa rede social dedicada à gastronomia! Encontre estabelecimentos incríveis pela sua localização, visualize cardápios atualizados, faça reservas com facilidade e fique por dentro das promoções exclusivas. Além disso, confira as avaliações e experiências de outros clientes para escolher o lugar perfeito para cada ocasião. Conecte-se com a culinária local de maneira prática e interativa!
