@@ -3,7 +3,7 @@ services:
   rabbit-mq:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: rabbitmq-configs/Dockerfile
     container_name: notification-queue
     ports:
       - "5672:5672"
