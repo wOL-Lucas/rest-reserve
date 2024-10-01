@@ -22,14 +22,39 @@ class RabbitMQConsumer
     {
         $host = env('RABBITMQ_HOST', 'localhost');
         $port = env('RABBITMQ_PORT', 5672);
-        $user = env('RABBITMQ_USER', 'guest');
-        $password = env('RABBITMQ_PASSWORD', 'guest');
-        $this->queue = env('RABBITMQ_QUEUE', 'user_queue');
+        $user = env('RABBITMQ_USER', 'rootroot');
+        $password = env('RABBITMQ_PASSWORD', '123456');
+        $vhost = env('RABBITMQ_VHOST', 'demo-vhost');
+        $this->queue = env('RABBITMQ_QUEUE', 'notification-service');
 
-        $this->connection = new AMQPStreamConnection($host, $port, $user, $password);
+        // Set heartbeat to 15 seconds and read_write_timeout to 30 seconds
+        $heartbeat = 15;
+        $read_write_timeout = 30;
+
+        $this->connection = new AMQPStreamConnection(
+            $host, 
+            $port, 
+            $user, 
+            $password, 
+            $vhost, 
+            false, 
+            'AMQPLAIN', 
+            null, 
+            'en_US', 
+            10.0, 
+            $read_write_timeout, 
+            null, 
+            false, 
+            $heartbeat
+        );
         $this->channel = $this->connection->channel();
         
-        $this->channel->queue_declare($this->queue, false, true, false, false);
+        $args = [
+            'x-queue-mode' => ['S', 'lazy'],
+            'x-queue-type' => ['S', 'classic']
+        ];
+        
+        $this->channel->queue_declare($this->queue, false, true, false, false, false, $args);
     }
 
     public function consume()
