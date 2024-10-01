@@ -1,13 +1,13 @@
 services:
 
-  rabbitmq:
-    image: rabbitmq:3.13-management
-    container_name: rabbitmq
+  rabbit-mq:
+    build: 
+      context: .
+      dockerfile: rabbitmq-configs/Dockerfile
+    container_name: notification-queue
     ports:
-      - 5672:5672
-      - 15672:15672
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - rest-reserve
 
