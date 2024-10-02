@@ -2,10 +2,10 @@
 
 namespace App\Service;
 
+use App\Model\Sender;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
-use PhpAmqpLib\Message\AMQPMessage;
-use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class RabbitMQConsumer
 {
@@ -61,8 +61,9 @@ class RabbitMQConsumer
     {
         echo "Waiting for messages. To exit press CTRL+C\n";
      
-        $callback = function($msg) {
-            echo "Received Data: " . print_r($msg->body, true) . "\n";
+        $callback = function ($msg) {
+            $data = json_decode($msg->body, true);
+            $this->sendEmail($data['subject'], $data['cc'], $data['message']);
         };
 
         $this->channel->basic_consume($this->queue, '', false, true, false, false, $callback);
@@ -75,6 +76,17 @@ class RabbitMQConsumer
                 $this->reconnect();
             }
         }
+    }
+
+    private function sendEmail($subject, $cc, $message)
+    {
+        $mailData = [
+            'subject' => $subject,
+            'cc' => $cc,
+            'message' => $message
+        ];
+
+        Mail::to($cc)->send(new Sender($mailData));
     }
 
     private function reconnect()
