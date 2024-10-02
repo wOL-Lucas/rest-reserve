@@ -25,11 +25,9 @@ class RabbitMQConsumer implements QueueConsumerInterface
         $user = env('RABBITMQ_USER', 'rootroot');
         $password = env('RABBITMQ_PASSWORD', '123456');
         $vhost = env('RABBITMQ_VHOST', 'demo-vhost');
-        $this->queue = env('RABBITMQ_QUEUE', 'notification-service');
-
-        // Set heartbeat to 15 seconds and read_write_timeout to 30 seconds
         $heartbeat = 15;
         $read_write_timeout = 30;
+        $this->queue = env('RABBITMQ_QUEUE', 'notification-service');
 
         $this->connection = new AMQPStreamConnection(
             $host, 
@@ -63,7 +61,7 @@ class RabbitMQConsumer implements QueueConsumerInterface
      
         $callback = function ($msg) {
             $data = json_decode($msg->body, true);
-            $this->mailConsumer->sendEmail($data['subject'], $data['cc'], $data['message']);
+            $this->mailConsumer->sendEmail($data['subject'], $data['remitter'], $data['message']);
         };
 
         $this->channel->basic_consume($this->queue, '', false, true, false, false, $callback);
