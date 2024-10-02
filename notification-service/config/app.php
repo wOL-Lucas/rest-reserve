@@ -124,7 +124,7 @@ return [
     ],
 
     'providers' => [
-        App\Providers\RabbitMQServiceProvider::class,
+        App\Providers\QueueServiceProvider::class,
     ],
 
 ];

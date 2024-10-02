@@ -2,20 +2,20 @@
 
 namespace App\Service;
 
-use App\Model\Sender;
+use App\Service\Interface\MailConsumerInterface;
+use App\Service\Interface\QueueConsumerInterface;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exception\AMQPRuntimeException;
-use Illuminate\Support\Facades\Mail;
 
-class RabbitMQConsumer
+class RabbitMQConsumer implements QueueConsumerInterface
 {
     private $connection;
     private $channel;
     private $queue;
 
-    public function __construct()
+    public function __construct(private MailConsumerInterface $mailConsumer)
     {
-        $this->connect();
+        $this->connect(); 
     }
 
     private function connect()
@@ -63,7 +63,7 @@ class RabbitMQConsumer
      
         $callback = function ($msg) {
             $data = json_decode($msg->body, true);
-            $this->sendEmail($data['subject'], $data['cc'], $data['message']);
+            $this->mailConsumer->sendEmail($data['subject'], $data['cc'], $data['message']);
         };
 
         $this->channel->basic_consume($this->queue, '', false, true, false, false, $callback);
@@ -78,27 +78,10 @@ class RabbitMQConsumer
         }
     }
 
-    private function sendEmail($subject, $cc, $message)
-    {
-        $mailData = [
-            'subject' => $subject,
-            'cc' => $cc,
-            'message' => $message
-        ];
-
-        Mail::to($cc)->send(new Sender($mailData));
-    }
-
     private function reconnect()
     {
         $this->channel->close();
         $this->connection->close();
         $this->connect();
-    }
-
-    public function __destruct()
-    {
-        $this->channel->close();
-        $this->connection->close();
     }
 }
