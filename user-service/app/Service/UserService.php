@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Service;
 
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\ValidRole;
+use App\Service\Interface\QueuePublisherInterface;
+use App\Service\Interface\UserServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserService implements UserServiceInterface
 {
     private $user;
     
-    function __construct(User $user)
+    function __construct(User $user, private QueuePublisherInterface $queuePublisher)
     {
         $this->user = $user;
     }
 
-    public function store(Request $request)
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
@@ -32,7 +34,6 @@ class UserController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        // Create the user
         $user = $this->user->create([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
@@ -42,6 +43,8 @@ class UserController extends Controller
             'image_url' => $request->input('image_url'),
         ]);
 
-        return response()->json($user, 201);
+        $this->queuePublisher->publish('Welcome to Rest Reserve', $user->email, 'Thanks for registering to Rest Reserve');
+
+        return $user;
     }
 }
