@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-class MailTemplate 
+class MailTemplate
 {
 
-    public $subject;
-    public $remitter;
-    public $message;
+    public String $subject;
+    public String $remitter;
+    public String $message;
 
     public function __construct($subject, $remitter, $message)
     {
@@ -16,7 +16,7 @@ class MailTemplate
         $this->message = $message;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'subject' => $this->subject,
