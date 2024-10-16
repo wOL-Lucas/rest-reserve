@@ -9,15 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('restaurants', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
             $table->unsignedBigInteger('user_id');
-            $table->decimal('average_rating', 2, 1)->default(0.0);
+            $table->unsignedBigInteger('restaurant_id');
+            $table->text('review');
+            $table->integer('rating');
             $table->timestamps();
+
+            // Foreign key constraints
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('restaurants');
+        Schema::dropIfExists('reviews');
     }
 };
