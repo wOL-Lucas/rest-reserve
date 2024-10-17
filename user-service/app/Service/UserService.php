@@ -47,4 +47,14 @@ class UserService implements UserServiceInterface
 
         return $user;
     }
+
+    public function list(Request $request)
+    {
+        return $this->user::all();
+    }
+
+    public function listById(Request $request)
+    {
+        return $this->user::find($request->id);
+    }
 }

@@ -32,12 +32,8 @@ class AuthController extends Controller
         $token = JWTAuth::claims($customClaims)->fromUser($user);
 
         return response()->json([
-            'status' => 'success',
-            'user' => $user,
-            'authorization' => [
                 'token' => $token,
                 'type' => 'bearer'
-            ]
         ]);
 
     }

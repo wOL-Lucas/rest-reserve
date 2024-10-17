@@ -11,6 +11,29 @@ services:
     networks:
       - rest-reserve
 
+  api-gateway:
+    build: 
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - rest-reserve
+  
+  user-service:
+    build: 
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    networks:
+      - rest-reserve
+    depends_on:
+      - user-db
+      - rabbit-mq
+
   user-db:
     image: postgres:latest
     container_name: user-db
@@ -22,6 +45,19 @@ services:
       POSTGRES_DB: user-db
     ports:
       - "5432:5432"
+
+  restaurant-service:
+    build: 
+      context: ./restaurant-service
+      dockerfile: Dockerfile
+    container_name: restaurant-service
+    ports:
+      - "8082:8082"
+    networks:
+      - rest-reserve
+    depends_on:
+      - restaurant-db
+      - rabbit-mq
 
   restaurant-db:
     image: postgres:latest
@@ -35,6 +71,19 @@ services:
     ports:
       - "5433:5432"
 
+  reservation-service:
+    build: 
+      context: ./reservation-service
+      dockerfile: Dockerfile
+    container_name: reservation-service
+    ports:
+      - "8083:8083"
+    networks:
+      - rest-reserve
+    depends_on:
+      - reservation-db
+      - rabbit-mq
+
   reservation-db:
     image: postgres:latest
     container_name: reservation-db
@@ -46,6 +95,18 @@ services:
       POSTGRES_DB: reservation-db
     ports:
       - "5434:5432"
+
+  notification-service:
+    build: 
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "8084:8084"
+    networks:
+      - rest-reserve
+    depends_on:
+      - rabbit-mq
 
 volumes:
   rabbitmq_data:

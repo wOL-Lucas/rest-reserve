@@ -20,4 +20,18 @@ class UserController extends Controller
             $this->userService->register($request), 201
         );
     }
+
+    public function list(Request $request)
+    {
+        return response()->json(
+            $this->userService->list($request), 201
+        );
+    }
+
+    public function listById(Request $request)
+    {
+        return response()->json(
+            $this->userService->listById($request), 201
+        );
+    }
 }
