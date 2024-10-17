@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\RestaurantImage;
 use App\Models\Review;
+use App\Models\Address;
 
 class Restaurant extends Model
 {
@@ -23,5 +24,10 @@ class Restaurant extends Model
     public function review()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function address()
+    {
+        return $this->hasMany(Address::class);
     }
 }
