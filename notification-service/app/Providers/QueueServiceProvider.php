@@ -27,6 +27,8 @@ class QueueServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        sleep(10);
+
         $this->mailConsumer = new MailConsumer();
         $this->queueConsumer = new RabbitMQConsumer($this->mailConsumer);
         $this->startQueueConsumer();
