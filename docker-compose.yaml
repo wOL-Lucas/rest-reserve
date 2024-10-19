@@ -4,6 +4,10 @@ services:
     build: 
       context: ./rabbitmq-configs
       dockerfile: Dockerfile
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      retries: 5
     container_name: notification-queue
     ports:
       - "5672:5672"
@@ -71,18 +75,18 @@ services:
     ports:
       - "5433:5432"
 
-  reservation-service:
-    build: 
-      context: ./reservation-service
-      dockerfile: Dockerfile
-    container_name: reservation-service
-    ports:
-      - "8083:8083"
-    networks:
-      - rest-reserve
-    depends_on:
-      - reservation-db
-      - rabbit-mq
+  # reservation-service:
+  #   build: 
+  #     context: ./reservation-service
+  #     dockerfile: Dockerfile
+  #   container_name: reservation-service
+  #   ports:
+  #     - "8083:8083"
+  #   networks:
+  #     - rest-reserve
+  #   depends_on:
+  #     - reservation-db
+  #     - rabbit-mq
 
   reservation-db:
     image: postgres:latest
