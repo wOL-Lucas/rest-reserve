@@ -4,13 +4,11 @@ namespace App\Service\Interface;
 
 use Illuminate\Http\Request;
 
-interface RestaurantServiceInterface
+interface ReviewServiceInterface
 {
     public function register(Request $request);
-    
-    public function find($id);
 
-    public function get_all();
+    public function get_reviews_by_restaurant_id($restaurant_id);
 
     public function update(Request $request);
 

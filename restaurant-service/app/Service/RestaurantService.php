@@ -49,4 +49,37 @@ class RestaurantService implements RestaurantServiceInterface
         
         return $restaurant;
     }
+
+    public function find($id)
+    {
+        return $this->restaurantRepository->with(['address', 'review'])->find($id);
+    }
+
+    public function get_all()
+    {
+        return $this->restaurantRepository->get();
+    }
+
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|int',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $restaurant = $this->restaurantRepository->find($request->id);
+        $restaurant->update($request->all());
+        
+        return $restaurant;
+    }
+
+    public function delete($id)
+    {
+        return $this->restaurantRepository->destroy($id);
+    }
 }

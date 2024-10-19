@@ -20,4 +20,25 @@ class AddressController extends Controller
             $this->addressService->register($request), 201
         );
     }
+
+    public function update(Request $request) 
+    {
+        return response()->json(
+            $this->addressService->update($request), 200
+        );
+    }   
+
+    public function delete($id) 
+    {
+        return response()->json(
+            $this->addressService->delete($id), 204
+        );
+    }
+
+    public function find_by_restaurant_id($restaurant_id) 
+    {
+        return response()->json(
+            $this->addressService->find_by_restaurant_id($restaurant_id), 200
+        );
+    }
 }
