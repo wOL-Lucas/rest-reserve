@@ -1,4 +1,6 @@
 #!/bin/sh
 
+sleep 10
 composer install --ignore-platform-reqs --no-scripts
-php -S 0.0.0.0:8081 -t bootstrap bootstrap/app.php
+composer dump-autoload --optimize
+php artisan serve --host=0.0.0.0 --port=8081
