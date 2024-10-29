@@ -16,7 +16,7 @@ class Restaurant extends Model
         "average_rating"
     ];
 
-    public function restaurantImage()
+    public function restaurantImages()
     {
         return $this->hasMany(RestaurantImage::class);
     }

@@ -9,7 +9,8 @@ class RestaurantImage extends Model
 {
     protected $fillable = [
         "restaurant_id",
-        "image_url"
+        "image_url",
+        "is_main"
     ];
 
     public function restaurant()

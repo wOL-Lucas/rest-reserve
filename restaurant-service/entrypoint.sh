@@ -1,8 +1,8 @@
 #!/bin/sh
 
+sleep 10
 composer install --ignore-platform-reqs --no-scripts
-
-sleep 5
-
-php artisan migrate --force
-php -S 0.0.0.0:8082 -t bootstrap bootstrap/app.php
+composer dump-autoload --optimize
+php artisan migrate
+php artisan storage:link
+php artisan serve --host=0.0.0.0 --port=8082

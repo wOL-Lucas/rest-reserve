@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('restaurant_id');
             $table->string('image_url');
+            $table->boolean('is_main');
             $table->timestamps();
 
             // Foreign key constraint
