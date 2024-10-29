@@ -4,6 +4,7 @@ use App\Resource\AddressController;
 use App\Resource\RestaurantController;
 use App\Resource\ReviewController;
 use Illuminate\Support\Facades\Route;
+
 Route::prefix('/restaurant')->group(function () {
     Route::post('/', [RestaurantController::class, 'register']);
     Route::get('/{id}', [RestaurantController::class, 'find']);

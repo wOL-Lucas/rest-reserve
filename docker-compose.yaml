@@ -11,28 +11,28 @@ services:
     networks:
       - rest-reserve
 
-  api-gateway:
-   build: 
-     context: ./api-gateway
-     dockerfile: Dockerfile
-   container_name: api-gateway
-   ports:
-     - "8080:8080"
-   networks:
-     - rest-reserve
+  # api-gateway:
+  # build: 
+  #   context: ./api-gateway
+  #   dockerfile: Dockerfile
+  # container_name: api-gateway
+  # ports:
+  #   - "8080:8080"
+  # networks:
+  #   - rest-reserve
   
   user-service:
-   build: 
+    build: 
      context: ./user-service
      dockerfile: Dockerfile
-   container_name: user-service
-   ports:
-     - "8081:8081"
-   networks:
-     - rest-reserve
-   depends_on:
-     - user-db
-     - rabbit-mq
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    networks:
+      - rest-reserve
+    depends_on:
+      - user-db
+      - rabbit-mq
 
   user-db:
     image: postgres:latest

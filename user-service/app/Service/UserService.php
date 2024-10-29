@@ -22,16 +22,23 @@ class UserService implements UserServiceInterface
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => ['required', 'string', new ValidRole],
-            'image_url' => 'nullable|string',
+          'first_name' => 'required|string|max:255',
+          'last_name' => 'required|string|max:255',
+          'email' => 'required|string|email|max:255|unique:users',
+          'password' => 'required|string|min:8',
+          'role' => ['required', 'string', new ValidRole],
+          'user_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
+        }
+
+        $imagePath = null;
+        if ($request->hasFile('user_image')) {
+            $image = $request->file('user_image');
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('user_images', $imageName, 'public');
         }
 
         $user = $this->user->create([
@@ -40,21 +47,35 @@ class UserService implements UserServiceInterface
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'role' => Role::USER,
-            'image_url' => $request->input('image_url'),
+            'image_url' => $imagePath,
         ]);
 
         $this->queuePublisher->publish('Welcome to Rest Reserve', $user->email, 'Thanks for registering to Rest Reserve');
+
+        if ($imagePath) {
+          $user->image_url = url('storage/' . $imagePath);
+        }
 
         return $user;
     }
 
     public function list(Request $request)
     {
-        return $this->user::all();
+        $users = $this->user::all();
+        foreach ($users as $user) {
+            if ($user->image_url) {
+                $user->image_url = url('storage/' . $user->image_url);
+            }
+        }
+        return $users;
     }
 
     public function listById(Request $request)
     {
-        return $this->user::find($request->id);
+        $user = $this->user::find($request->id);
+        if ($user && $user->image_url) {
+            $user->image_url = url('storage/' . $user->image_url);
+        }
+        return $user;
     }
 }
