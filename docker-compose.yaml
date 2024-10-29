@@ -46,18 +46,18 @@ services:
     ports:
       - "5432:5432"
 
-  # restaurant-service:
-  #   build: 
-  #     context: ./restaurant-service
-  #     dockerfile: Dockerfile
-  #   container_name: restaurant-service
-  #   ports:
-  #     - "8082:8082"
-  #   networks:
-  #     - rest-reserve
-  #   depends_on:
-  #     - restaurant-db
-  #     - rabbit-mq
+  restaurant-service:
+    build: 
+      context: ./restaurant-service
+      dockerfile: Dockerfile
+    container_name: restaurant-service
+    ports:
+       - "8082:8082"
+    networks:
+      - rest-reserve
+    depends_on:
+      - restaurant-db
+      - rabbit-mq
 
   restaurant-db:
     image: postgres:latest

@@ -78,8 +78,6 @@ class AddressService implements AddressServiceInterface
         }
 
         $address->delete();
-
-        return response()->json(['message' => 'Address deleted'], 200);
     }
 
     public function find_by_restaurant_id($restaurant_id)

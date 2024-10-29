@@ -65,15 +65,17 @@ class ReviewService implements ReviewServiceInterface
         $review->delete();
 
         $this->updateRestaurantRating($review->restaurant_id);
-
-        return response()->json(['message' => 'Review deleted'], 200);
     }
 
     private function updateRestaurantRating($restaurant_id)
     {
         $restaurant = $this->restaurantRepository->find($restaurant_id);
         $reviews = $this->reviewRepository->where('restaurant_id', $restaurant_id)->get();
-        $restaurant->average_rating = $reviews->avg('rating');
+        if ($reviews->count() > 0) {
+            $restaurant->average_rating = $reviews->avg('rating');
+        } else {
+            $restaurant->average_rating = 0;
+        }
         
         $restaurant->save();
     }   

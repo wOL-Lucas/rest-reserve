@@ -30,4 +30,9 @@ class Restaurant extends Model
     {
         return $this->hasMany(Address::class);
     }
+
+    public function menu()
+    {
+        return $this->hasMany(Menu::class);
+    }
 }

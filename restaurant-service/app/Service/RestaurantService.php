@@ -29,7 +29,8 @@ class RestaurantService implements RestaurantServiceInterface
             'address.city' => 'required|string',
             'address.country' => 'required|string',
             'address.complement' => 'nullable|string',
-            'address.number' => 'required|int'
+            'address.number' => 'required|int',
+            'main_image' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -47,40 +48,30 @@ class RestaurantService implements RestaurantServiceInterface
         $address = $request->input('address');
         $restaurant->address()->create($address);
     
-        $restaurant->restaurantImages = $this->registerImages($request, $restaurant);
+        $this->registerImages($request, $restaurant);
 
-        return $restaurant;
+        return $this->restaurantRepository->find($restaurant->id)->load(['address', 'restaurantImages']);
     }
+
 
     public function find($id)
     {
-        $restaurant = $this->restaurantRepository->with(['address', 'review', 'restaurantImages'])->find($id);
-        $formatedImages = [];
-
-        foreach($restaurant->restaurantImages as $image) {
-            $formatedImages[] = [
-                'image_url' => url('storage/' . $image->image_url),
-                'is_main' => $image->is_main
-            ];
-        }
-        unset ($restaurant->restaurantImages);
-        $restaurant->restaurant_images = $formatedImages;
-        return $restaurant;
+        return $this->restaurantRepository->with(['address', 'review', 'restaurantImages', 'menu.menuItem'])->find($id);
     }
+
 
     public function get_all()
     {
         $restaurants = $this->restaurantRepository->with('restaurantImages')->get();
 
         foreach ($restaurants as $restaurant) {
-            $mainImage = $restaurant->restaurantImages()->where('is_main', true)->first();
-            $restaurant->main_image_url = url('storage/' . $mainImage->image_url);
-        }
-        foreach ($restaurants as $restaurant) {
+            $restaurant->main_image_url = $restaurant->restaurantImages()->where('is_main', true)->first()->image_url;
             unset($restaurant->restaurantImages);
         }
+
         return $restaurants;
     }
+
 
     public function update(Request $request)
     {
@@ -100,27 +91,23 @@ class RestaurantService implements RestaurantServiceInterface
         return $restaurant;
     }
 
+
     public function delete($id)
     {
-        return $this->restaurantRepository->destroy($id);
+        $this->restaurantRepository->destroy($id);
     }
+
 
     private function registerImages(Request $request, Restaurant $restaurant)
     {
-        $registeredImages = [];
 
         $this->validateImage($request, 'main_image');
         $imagePath = $this->getImagePath($request, 'main_image');
 
         $restaurant->restaurantImages()->create([
-            'image_url' => $imagePath,
+            'image_url' => $imagePath ? url('storage/' . $imagePath) : null,
             'is_main' => true
         ]);
-
-        $registeredImages[] = [
-            'image_url' => url('storage/' . $imagePath),
-            'is_main' => true
-        ];
 
         $expectedFields = [
             'name', 
@@ -137,19 +124,15 @@ class RestaurantService implements RestaurantServiceInterface
                 $imagePath = $this->getImagePath($request, $key);
 
                 $restaurant->restaurantImages()->create([
-                    'image_url' => $imagePath,
+                    'image_url' => $imagePath ? url('storage/' . $imagePath) : null,
                     'is_main' => false
                 ]);
-
-                $registeredImages[] = [
-                    'image_url' => url('storage/' . $imagePath),
-                    'is_main' => false
-                ];
             }
         }
 
-        return $registeredImages;
+        return $restaurant;
     }
+
 
     private function validateImage(Request $request, String $key) 
     {
@@ -160,8 +143,8 @@ class RestaurantService implements RestaurantServiceInterface
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
     }
+
 
     private function getImagePath(Request $request, String $key)
     {

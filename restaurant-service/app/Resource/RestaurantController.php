@@ -45,7 +45,7 @@ class RestaurantController extends Controller
     public function delete($id)
     {
         return response()->json(
-            $this->restaurantService->delete($id), 200
+            $this->restaurantService->delete($id), 204
         );
     }
 }

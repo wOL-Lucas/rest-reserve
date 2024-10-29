@@ -38,7 +38,7 @@ class ReviewController extends Controller
     public function delete($id) 
     {
         return response()->json(
-            $this->reviewService->delete($id), 200
+            $this->reviewService->delete($id), 204
         );
     }
 }

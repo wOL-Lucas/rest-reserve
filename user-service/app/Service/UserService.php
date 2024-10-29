@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Validator;
 
 class UserService implements UserServiceInterface
 {
-    private $user;
+    private $userRepository;
     
-    function __construct(User $user, private QueuePublisherInterface $queuePublisher)
+    function __construct(User $userRepository, private QueuePublisherInterface $queuePublisher)
     {
-        $this->user = $user;
+        $this->userRepository = $userRepository;
     }
 
     public function register(Request $request)
@@ -41,41 +41,27 @@ class UserService implements UserServiceInterface
             $imagePath = $image->storeAs('user_images', $imageName, 'public');
         }
 
-        $user = $this->user->create([
+        $user = $this->userRepository->create([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'role' => Role::USER,
-            'image_url' => $imagePath,
+            'image_url' => $imagePath ? url('storage/' . $imagePath) : null
         ]);
 
         $this->queuePublisher->publish('Welcome to Rest Reserve', $user->email, 'Thanks for registering to Rest Reserve');
 
-        if ($imagePath) {
-          $user->image_url = url('storage/' . $imagePath);
-        }
-
-        return $user;
+        return $this->userRepository::find($user->id);
     }
 
     public function list(Request $request)
     {
-        $users = $this->user::all();
-        foreach ($users as $user) {
-            if ($user->image_url) {
-                $user->image_url = url('storage/' . $user->image_url);
-            }
-        }
-        return $users;
+        return $this->userRepository::all();
     }
 
     public function listById(Request $request)
     {
-        $user = $this->user::find($request->id);
-        if ($user && $user->image_url) {
-            $user->image_url = url('storage/' . $user->image_url);
-        }
-        return $user;
+        return $this->userRepository::find($request->id);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Resource\AddressController;
+use App\Resource\MenuController;
 use App\Resource\RestaurantController;
 use App\Resource\ReviewController;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,9 @@ Route::prefix('/review')->group(function () {
     Route::get('/restaurant/{restaurant_id}', [ReviewController::class, 'get_reviews_by_restaurant_id']);
     Route::patch('/', [ReviewController::class, 'update']);
     Route::delete('/{id}', [ReviewController::class, 'delete']);
+});
+
+Route::prefix('/menu')->group(function () {
+    Route::post('/', [MenuController::class, 'register']);
+    Route::delete('/{id}', [MenuController::class, 'delete']);
 });
