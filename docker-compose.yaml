@@ -11,15 +11,15 @@ services:
     networks:
       - rest-reserve
 
-  # api-gateway:
-  # build: 
-  #   context: ./api-gateway
-  #   dockerfile: Dockerfile
-  # container_name: api-gateway
-  # ports:
-  #   - "8080:8080"
-  # networks:
-  #   - rest-reserve
+  api-gateway:
+    build: 
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - rest-reserve
   
   user-service:
     build: 
@@ -84,29 +84,29 @@ services:
   #     - reservation-db
   #     - rabbit-mq
 
-  # reservation-db:
-  #   image: postgres:latest
-  #   container_name: reservation-db
-  #   networks:
-  #     - rest-reserve
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: root
-  #     POSTGRES_DB: reservation-db
-  #   ports:
-  #     - "5434:5432"
+  reservation-db:
+    image: postgres:latest
+    container_name: reservation-db
+    networks:
+      - rest-reserve
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: reservation-db
+    ports:
+      - "5434:5432"
 
-  # notification-service:
-  #   build: 
-  #     context: ./notification-service
-  #     dockerfile: Dockerfile
-  #   container_name: notification-service
-  #   ports:
-  #     - "8084:8084"
-  #   networks:
-  #     - rest-reserve
-  #   depends_on:
-  #     - rabbit-mq
+  notification-service:
+    build: 
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "8084:8084"
+    networks:
+      - rest-reserve
+    depends_on:
+      - rabbit-mq
 
 volumes:
   rabbitmq_data:
