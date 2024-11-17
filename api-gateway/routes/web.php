@@ -31,7 +31,7 @@ Route::any(
                     'body' => $request->getContent()
                 ]
             );
-            
+
             return response(
                 $resp
                     ->getBody()
