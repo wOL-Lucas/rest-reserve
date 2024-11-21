@@ -1,24 +1,12 @@
-FROM php:8-alpine
-
-WORKDIR /var/www/
-
-RUN apk add --no-cache \
-    libcurl \
-    sqlite \
-    openssl-dev \
-    linux-headers \
-    musl-dev \
-    postgresql-dev \
-    && docker-php-ext-install bcmath pgsql pdo_pgsql sockets \
-    && apk del openssl-dev musl-dev
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /app
 COPY . .
+RUN mvn clean package -DskipTests
 
-COPY entrypoint.sh .
-RUN chmod +x ./entrypoint.sh
 
-EXPOSE 8080
 
-ENTRYPOINT ["./entrypoint.sh"]
+FROM openjdk:17
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8082
+ENTRYPOINT java -jar app.jar

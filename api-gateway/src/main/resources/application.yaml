@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: ms-restaurants
+          uri: http://restaurant-service:8082
+          predicates:
+            - Method=POST, GET, PATCH, DELETE
+            - Path=/restaurant, /restaurant/{id}
+
+        - id: ms-restaurants
+          uri: http://restaurant-service:8082
+          predicates:
+            - Method=POST, GET, PATCH, DELETE
+            - Path=/address, /address/{id}, /address/restaurant/{id}
+
+        - id: ms-restaurants
+          uri: http://restaurant-service:8082
+          predicates:
+            - Method=POST, GET, PATCH, DELETE
+            - Path=/review, /review/{id}j, /review/restaurant/{id}
+
+        - id: ms-restaurants
+          uri: http://restaurant-service:8082
+          predicates:
+            - Method=POST, DELETE
+            - Path=/menu, /menu/{id}
+
+        - id: ms-users
+          uri: http://user-service:8081
+          predicates:
+            - Method=POST, GET
+            - Path=/users, /users/{id}, /login
