@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'JetBrainsMono';
+  src: url('../assets/fonts/JetBrainsMono.ttf') format('truetype');
+}
+
+* {
+  font-family: 'JetBrainsMono';
+  scrollbar-width: thin;
+}
+
+.medium-border-radius {
+  border-radius: 10px;
+}
+
+.animated {
+  animation: ease-in-out 1s;
+}
+
