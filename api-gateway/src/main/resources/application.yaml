@@ -34,3 +34,9 @@ spring:
           predicates:
             - Method=POST, GET
             - Path=/users, /users/{id}, /login
+
+        - id: ms-reservation
+          uri: http://reservation-service:8083
+          predicates:
+            - Method=POST, GET, PUT
+            - Path=/reserves, /reserves/{id}, /reserves/user/{id}, /reserves/restaurant/{id}

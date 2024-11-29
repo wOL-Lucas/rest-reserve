@@ -71,30 +71,30 @@ services:
     ports:
       - "5433:5432"
 
-  # reservation-service:
-  #   build: 
-  #     context: ./reservation-service
-  #     dockerfile: Dockerfile
-  #   container_name: reservation-service
-  #   ports:
-  #     - "8083:8083"
-  #   networks:
-  #     - rest-reserve
-  #   depends_on:
-  #     - reservation-db
-  #     - rabbit-mq
+  reservation-service:
+    build: 
+      context: ./reservation-service
+      dockerfile: Dockerfile
+    container_name: reservation-service
+    ports:
+      - "8083:8083"
+    networks:
+      - rest-reserve
+    depends_on:
+      - reservation-db
+      - rabbit-mq
 
-#   reservation-db:
-#     image: postgres:latest
-#     container_name: reservation-db
-#     networks:
-#       - rest-reserve
-#     environment:
-#       POSTGRES_USER: postgres
-#       POSTGRES_PASSWORD: root
-#       POSTGRES_DB: reservation-db
-#     ports:
-#       - "5434:5432"
+  reservation-db:
+    image: postgres:latest
+    container_name: reservation-db
+    networks:
+      - rest-reserve
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: reservation-db
+    ports:
+      - "5434:5432"
 
 #   notification-service:
 #     build: 
