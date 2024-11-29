@@ -115,7 +115,7 @@ class ReserveService implements ReserveServiceInterface
             ], 401);
         }
 
-        $response = Http::post('http://localhost:8081/validate-token', [
+        $response = Http::post('http://user-service:8081/validate-token', [
             'token' => $token,
             'requiredRole' => $requiredRole
         ]);

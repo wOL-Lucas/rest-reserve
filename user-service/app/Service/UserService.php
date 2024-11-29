@@ -59,16 +59,18 @@ class UserService implements UserServiceInterface
 
     public function listById(Request $request, $id)
     {
+        $user = $this->userRepository::find($id);
+
         $payload = JWTAuth::setToken($request->bearerToken())->getPayload();
         $role = $payload->get('role');
     
-        if ($role != "user") {
+        if ($role != $user->role) {
             return response()->json([
                 'status' => 'Failed to authenticate',
                 'message' => 'UNAUTHORIZED',
             ], 401);
         }
 
-        return response()->json($this->userRepository::find($id), 200);
+        return response()->json($user, 200);
     }
 }

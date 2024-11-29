@@ -18,11 +18,11 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        return response()->json($this->authService->login($request), 200);
+        return $this->authService->login($request);
     }
 
     public function validateToken(Request $request)
     {
-        return response()->json($this->authService->validateToken($request), 200);
+        return $this->authService->validateToken($request);
     }
 }
