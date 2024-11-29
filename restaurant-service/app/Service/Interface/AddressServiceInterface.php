@@ -10,7 +10,7 @@ interface AddressServiceInterface
 
     public function update(Request $request);
 
-    public function delete($id);
+    public function delete(Request $request, $id);
 
-    public function find_by_restaurant_id($restaurant_id);
+    public function find_by_restaurant_id(Request $request, $restaurant_id);
 }

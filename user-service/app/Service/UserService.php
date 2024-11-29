@@ -5,10 +5,12 @@ namespace App\Service;
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\ValidRole;
+use App\Service\Interface\AuthServiceInterface;
 use App\Service\Interface\QueuePublisherInterface;
 use App\Service\Interface\UserServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class UserService implements UserServiceInterface
 {
@@ -46,22 +48,27 @@ class UserService implements UserServiceInterface
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
-            'role' => Role::USER,
+            'role' => $request->input('role'),
             'image_url' => $imagePath ? url('storage/' . $imagePath) : null
         ]);
 
         $this->queuePublisher->publish('Welcome to Rest Reserve', $user->email, 'Thanks for registering to Rest Reserve');
 
-        return $this->userRepository::find($user->id);
+        return response()->json($this->userRepository::find($user->id), 201);
     }
 
-    public function list(Request $request)
+    public function listById(Request $request, $id)
     {
-        return $this->userRepository::all();
-    }
+        $payload = JWTAuth::setToken($request->bearerToken())->getPayload();
+        $role = $payload->get('role');
+    
+        if ($role != "user") {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
 
-    public function listById(Request $request)
-    {
-        return $this->userRepository::find($request->id);
+        return response()->json($this->userRepository::find($id), 200);
     }
 }

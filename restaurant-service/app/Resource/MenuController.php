@@ -16,16 +16,22 @@ class MenuController extends Controller
 
     public function register(Request $request) 
     {
-        return response()->json(
-            $this->menuService->register($request), 201
-        );
+        return $this->menuService->register($request);
     }
 
-    public function delete($id) 
+    public function delete(Request $request, $id) 
     {
-        return response()->json(
-            $this->menuService->delete($id), 204
-        );
+        return $this->menuService->delete($request, $id);
+    }
+
+    public function deleteItem(Request $request, $id) 
+    {
+        return $this->menuService->deleteItem($request, $id);
+    }
+
+    public function addItem(Request $request) 
+    {
+        return $this->menuService->addItem($request);
     }
 
 }

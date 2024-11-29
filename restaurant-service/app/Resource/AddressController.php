@@ -16,29 +16,21 @@ class AddressController extends Controller
 
     public function register(Request $request) 
     {
-        return response()->json(
-            $this->addressService->register($request), 201
-        );
+        return $this->addressService->register($request);
     }
 
     public function update(Request $request) 
     {
-        return response()->json(
-            $this->addressService->update($request), 200
-        );
+        return $this->addressService->update($request);
     }   
 
-    public function delete($id) 
+    public function delete(Request $request, $id) 
     {
-        return response()->json(
-            $this->addressService->delete($id), 204
-        );
+        return $this->addressService->delete($request, $id);
     }
 
-    public function find_by_restaurant_id($restaurant_id) 
+    public function find_by_restaurant_id(Request $request, $restaurant_id) 
     {
-        return response()->json(
-            $this->addressService->find_by_restaurant_id($restaurant_id), 200
-        );
+        return $this->addressService->find_by_restaurant_id($request, $restaurant_id);
     }
 }

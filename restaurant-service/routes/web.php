@@ -31,4 +31,6 @@ Route::prefix('/review')->group(function () {
 Route::prefix('/menu')->group(function () {
     Route::post('/', [MenuController::class, 'register']);
     Route::delete('/{id}', [MenuController::class, 'delete']);
+    Route::delete('/item/{id}', [MenuController::class, 'deleteItem']);
+    Route::post('/item', [MenuController::class, 'addItem']);
 });

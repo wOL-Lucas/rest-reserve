@@ -16,21 +16,21 @@ class ReserveController extends Controller
 
     public function registerReserve(Request $request)
     {
-        return response()->json($this->reserveService->registerReserve($request), 201);
+        return $this->reserveService->registerReserve($request);
     }
 
-    public function cancelReserve($id)
+    public function cancelReserve(Request $request, $id)
     {
-        return response()->json($this->reserveService->cancelReserve($id), 200);
+        return $this->reserveService->cancelReserve($request, $id);
     }
 
-    public function findByUserId($userId)
+    public function findByUserId(Request $request, $userId)
     {
-        return response()->json($this->reserveService->findByUserId($userId), 200);
+        return $this->reserveService->findByUserId($request, $userId);
     }
 
-    public function findByRestaurantId($restaurantId)
+    public function findByRestaurantId(Request $request, $restaurantId)
     {
-        return response()->json($this->reserveService->findByRestaurantId($restaurantId), 200);
+        return $this->reserveService->findByRestaurantId($request, $restaurantId);
     }
 }

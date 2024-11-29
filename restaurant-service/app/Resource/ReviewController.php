@@ -16,29 +16,21 @@ class ReviewController extends Controller
 
     public function register(Request $request) 
     {
-        return response()->json(
-            $this->reviewService->register($request), 201
-        );
+        return $this->reviewService->register($request);
     }   
 
     public function get_reviews_by_restaurant_id($restaurant_id) 
     {
-        return response()->json(
-            $this->reviewService->get_reviews_by_restaurant_id($restaurant_id), 200
-        );
+        return $this->reviewService->get_reviews_by_restaurant_id($restaurant_id);
     }
 
     public function update(Request $request) 
     {
-        return response()->json(
-            $this->reviewService->update($request), 200
-        );
+        return $this->reviewService->update($request);
     }
 
-    public function delete($id) 
+    public function delete(Request $request, $id) 
     {
-        return response()->json(
-            $this->reviewService->delete($id), 204
-        );
+        return $this->reviewService->delete($request, $id);
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 interface ReserveServiceInterface
 {
     public function registerReserve(Request $request);
-    public function cancelReserve($id);
-    public function findByUserId($userId);
-    public function findByRestaurantId($restaurantId);
+    public function cancelReserve(Request $request, $id);
+    public function findByUserId(Request $request, $userId);
+    public function findByRestaurantId(Request $request, $restaurantId);
 }

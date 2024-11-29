@@ -16,36 +16,26 @@ class RestaurantController extends Controller
 
     public function register(Request $request)
     {
-        return response()->json(
-            $this->restaurantService->register($request), 201
-        );
+        return $this->restaurantService->register($request);
     }
 
     public function find($id)
     {
-        return response()->json(
-            $this->restaurantService->find($id), 200
-        );
+        return $this->restaurantService->find($id);
     }
 
     public function get_all()
     {
-        return response()->json(
-            $this->restaurantService->get_all(), 200
-        );
+        return $this->restaurantService->get_all();
     }
 
     public function update(Request $request)
     {
-        return response()->json(
-            $this->restaurantService->update($request), 200
-        );
+        return $this->restaurantService->update($request);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
-        return response()->json(
-            $this->restaurantService->delete($id), 204
-        );
+        return $this->restaurantService->delete($request, $id);
     }
 }

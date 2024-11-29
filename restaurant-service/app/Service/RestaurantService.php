@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Models\Restaurant;
 use App\Service\Interface\RestaurantServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RestaurantService implements RestaurantServiceInterface
@@ -18,6 +20,15 @@ class RestaurantService implements RestaurantServiceInterface
 
     public function register(Request $request) 
     {
+        Log::info('Register method called');
+
+        if (!$this->validatePermission($request, 'manager')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -50,13 +61,19 @@ class RestaurantService implements RestaurantServiceInterface
     
         $this->registerImages($request, $restaurant);
 
-        return $this->restaurantRepository->find($restaurant->id)->load(['address', 'restaurantImages']);
+        return response()->json($this->restaurantRepository->find($restaurant->id)->load(['address', 'restaurantImages']), 201);
     }
 
 
     public function find($id)
     {
-        return $this->restaurantRepository->with(['address', 'review', 'restaurantImages', 'menu.menuItem'])->find($id);
+        $restaurant = $this->restaurantRepository->with(['address', 'review', 'restaurantImages', 'menu.menuItem'])->find($id);
+
+        if (!$restaurant) {
+            return response()->json(['message' => 'Restaurant not found'], 404);
+        }
+
+        return response()->json($restaurant, 200);
     }
 
 
@@ -69,12 +86,20 @@ class RestaurantService implements RestaurantServiceInterface
             unset($restaurant->restaurantImages);
         }
 
-        return $restaurants;
+        return response()->json($restaurants, 200);
     }
 
 
     public function update(Request $request)
     {
+
+        if (!$this->validatePermission($request, 'manager')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $validator = Validator::make($request->all(), [
             'id' => 'required|int',
             'name' => 'required|string|max:255',
@@ -88,13 +113,23 @@ class RestaurantService implements RestaurantServiceInterface
         $restaurant = $this->restaurantRepository->find($request->id);
         $restaurant->update($request->all());
         
-        return $restaurant;
+        return response()->json($restaurant, 200);
     }
 
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
+
+        if (!$this->validatePermission($request, 'manager')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $this->restaurantRepository->destroy($id);
+
+        return response()->json(['message' => 'Restaurant deleted'], 200);
     }
 
 
@@ -156,5 +191,35 @@ class RestaurantService implements RestaurantServiceInterface
         }
 
         return $imagePath;
+    }
+
+    private function validatePermission(Request $request, String $requiredRole) 
+    {
+
+        Log::info('validatePermission method called');
+
+        $token = trim($request->bearerToken());
+
+        Log:info($token);
+
+        if (!$token) {  
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
+        $response = Http::post('http://user-service:8081/validate-token', [
+            'token' => $token,
+            'requiredRole' => $requiredRole
+        ]);
+
+        Log::info('Response from user-service: ' . $response->body());
+
+        $status = $response->json()['message'];
+
+        Log::info($status);
+
+        return $status === 'AUTHORIZED';
     }
 }

@@ -2,39 +2,27 @@
 
 namespace App\Resource;
 
+use App\Service\Interface\AuthServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function login(Request $request) 
+    private $authService;
+
+    function __construct(AuthServiceInterface $authService)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
+        $this->authService = $authService;
+    }
 
-        $credentials = $request->only('email', 'password');
-        $token = Auth::attempt($credentials);
-        
-        if (!$token) {
-            return response()->json([
-                'status' => 'Failed to authenticate',
-                'message' => 'Unauthorized',
-            ], 401);
-        }
+    public function login(Request $request)
+    {
+        return response()->json($this->authService->login($request), 200);
+    }
 
-        $user = Auth::user();
-        $roles = $user->role;
-
-        $customClaims = ['roles' => $roles];
-        $token = JWTAuth::claims($customClaims)->fromUser($user);
-
-        return response()->json([
-                'token' => $token,
-                'type' => 'bearer'
-        ]);
-
+    public function validateToken(Request $request)
+    {
+        return response()->json($this->authService->validateToken($request), 200);
     }
 }

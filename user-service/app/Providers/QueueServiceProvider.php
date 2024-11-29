@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use App\Service\Interface\QueueConsumerInterface;
+use App\Service\Interface\QueuePublisherInterface;
 use Illuminate\Support\ServiceProvider;
-use App\Service\RabbitMQConsumer;
+use App\Service\RabbitMQPublisher;
 
 class QueueServiceProvider extends ServiceProvider
 {
-    private QueueConsumerInterface $queueConsumer;
+    private QueuePublisherInterface $queuePublisher;
     
     /**
      * Register services.
@@ -23,7 +23,7 @@ class QueueServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->queueConsumer = new RabbitMQConsumer();
+        $this->queuePublisher = new RabbitMQPublisher();
     }
 
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Service\AuthService;
+use App\Service\Interface\AuthServiceInterface;
 use App\Service\Interface\QueuePublisherInterface;
 use App\Service\Interface\UserServiceInterface;
 use App\Service\RabbitMQPublisher;
@@ -17,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(QueuePublisherInterface::class, RabbitMQPublisher::class);
         $this->app->bind(UserServiceInterface::class, UserService::class);
+        $this->app->bind(AuthServiceInterface::class, AuthService::class);
     }
 
     /**

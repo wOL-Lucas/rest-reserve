@@ -14,5 +14,5 @@ interface RestaurantServiceInterface
 
     public function update(Request $request);
 
-    public function delete($id);
+    public function delete(Request $request, $id);
 }

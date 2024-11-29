@@ -6,6 +6,8 @@ use App\Models\Restaurant;
 use App\Models\Review;
 use App\Service\Interface\ReviewServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ReviewService implements ReviewServiceInterface
 {
@@ -21,6 +23,14 @@ class ReviewService implements ReviewServiceInterface
 
     public function register(Request $request)
     {
+
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+        
         $restaurant = $this->restaurantRepository->find($request->restaurant_id);
 
         if (!$restaurant) {
@@ -31,16 +41,24 @@ class ReviewService implements ReviewServiceInterface
 
         $this->updateRestaurantRating($restaurant->id);
 
-        return $review;
+        return response()->json($review, 201);
     }
 
     public function get_reviews_by_restaurant_id($restaurant_id)
     {
-        return $this->reviewRepository->where('restaurant_id', $restaurant_id)->get();
+        return response()->json($this->reviewRepository->where('restaurant_id', $restaurant_id)->get(), 200);
     }
 
     public function update(Request $request)
     {
+
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $review = $this->reviewRepository->find($request->id);
 
         if (!$review) {
@@ -51,11 +69,19 @@ class ReviewService implements ReviewServiceInterface
 
         $this->updateRestaurantRating($review->restaurant_id);
 
-        return $review;
+        return response()->json($review, 200);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
+
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $review = $this->reviewRepository->find($id);
 
         if (!$review) {
@@ -65,6 +91,8 @@ class ReviewService implements ReviewServiceInterface
         $review->delete();
 
         $this->updateRestaurantRating($review->restaurant_id);
+
+        return response()->json(['message' => 'Review deleted'], 200);
     }
 
     private function updateRestaurantRating($restaurant_id)
@@ -79,4 +107,34 @@ class ReviewService implements ReviewServiceInterface
         
         $restaurant->save();
     }   
+
+    private function validatePermission(Request $request, String $requiredRole) 
+    {
+
+        Log::info('validatePermission method called');
+
+        $token = trim($request->bearerToken());
+
+        Log:info($token);
+
+        if (!$token) {  
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
+        $response = Http::post('http://user-service:8081/validate-token', [
+            'token' => $token,
+            'requiredRole' => $requiredRole
+        ]);
+
+        Log::info('Response from user-service: ' . $response->body());
+
+        $status = $response->json()['message'];
+
+        Log::info($status);
+
+        return $status === 'AUTHORIZED';
+    }
 }

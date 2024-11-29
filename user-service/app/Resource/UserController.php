@@ -16,22 +16,11 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        return response()->json(
-            $this->userService->register($request), 201
-        );
+        return $this->userService->register($request);
     }
 
-    public function list(Request $request)
+    public function listById(Request $request, $id)
     {
-        return response()->json(
-            $this->userService->list($request), 201
-        );
-    }
-
-    public function listById(Request $request)
-    {
-        return response()->json(
-            $this->userService->listById($request), 201
-        );
+        return $this->userService->listById($request, $id);
     }
 }

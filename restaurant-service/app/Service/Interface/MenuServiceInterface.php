@@ -8,5 +8,9 @@ interface MenuServiceInterface
 {
     public function register(Request $request);
 
-    public function delete($id);
+    public function delete(Request $request, $id);
+
+    public function deleteItem(Request $request, $id);
+
+    public function addItem(Request $request); 
 }

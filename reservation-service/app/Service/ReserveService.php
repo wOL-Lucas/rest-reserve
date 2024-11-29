@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Models\Reserve;
 use App\Service\Interface\ReserveServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ReserveService implements ReserveServiceInterface
@@ -18,6 +20,14 @@ class ReserveService implements ReserveServiceInterface
 
     public function registerReserve(Request $request)
     {
+
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $request->merge(['status' => 'created']);
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|integer',
@@ -34,11 +44,19 @@ class ReserveService implements ReserveServiceInterface
  
         $reserve = $this->reserveRepository->create($request->all());
 
-        return $reserve;
+        return response()->json($reserve, 201);
     }
 
-    public function cancelReserve($id)
+    public function cancelReserve(Request $request, $id)
     {
+
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $reserve = $this->reserveRepository->find($id);
 
         if (!$reserve) {
@@ -48,20 +66,66 @@ class ReserveService implements ReserveServiceInterface
         $reserve->status = 'cancelled';
         $reserve->save();
 
-        return $reserve;
+        return response()->json($reserve, 200);
     }
 
-    public function findByUserId($userId)
+    public function findByUserId(Request $request, $userId)
     {
+
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $reserves = $this->reserveRepository->where('user_id', $userId)->get();
 
-        return $reserves;
+        return response()->json($reserves, 200);
     }
 
-    public function findByRestaurantId($restaurantId)
+    public function findByRestaurantId(Request $request, $restaurantId)
     {
+
+        if (!$this->validatePermission($request, 'manager')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
         $reserves = $this->reserveRepository->where('restaurant_id', $restaurantId)->get();
 
-        return $reserves;
+        return response()->json($reserves, 200);
+    }
+
+    private function validatePermission(Request $request, String $requiredRole) 
+    {
+
+        Log::info('validatePermission method called');
+
+        $token = trim($request->bearerToken());
+
+        Log:info($token);
+
+        if (!$token) {  
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
+        $response = Http::post('http://localhost:8081/validate-token', [
+            'token' => $token,
+            'requiredRole' => $requiredRole
+        ]);
+
+        Log::info('Response from user-service: ' . $response->body());
+
+        $status = $response->json()['message'];
+
+        Log::info($status);
+
+        return $status === 'AUTHORIZED';
     }
 }
