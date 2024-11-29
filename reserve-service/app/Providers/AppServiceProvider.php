@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Service\Interface\ReserverServiceInterface;
+use App\Service\Interface\ReserveServiceInterface;
 use App\Service\ReserveService;
 
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(ReserverServiceInterface::class, ReserveService::class);
+        $this->app->bind(ReserveServiceInterface::class, ReserveService::class);
     }
 
     /**
