@@ -31,26 +31,26 @@
       <q-tabs
         vertical
         v-model="tab"
-        class="bg-secondary"
+        class="bg-grey-2"
         active-color="black"
         indicator-color="black"
         switch-indicator
       >
-        <q-tab
+        <q-route-tab
           name="home"
           icon="img:icons/home.png"
           :label="leftDrawerOpen ? ' ' : 'Home'"
           to="/"
         />
 
-        <q-tab
+        <q-route-tab
           name="reservations"
           icon="img:icons/booking.png"
           :label="leftDrawerOpen ? ' ' : 'Reservations'"
           to="/reservations"
         />
 
-        <q-tab
+        <q-route-tab
           name="menu"
           icon="img:icons/restaurant.png"
           :label="leftDrawerOpen ? ' ' : 'Menu'"
