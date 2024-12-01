@@ -50,9 +50,8 @@ import { useRouter } from 'vue-router'
 import PrimaryButton from 'src/components/button/PrimaryButton.vue'
 import { AxiosHttp } from 'src/http/axios';
 import HttpRequest from 'src/http/httpRequest';
-import { ShowDialog } from 'src/utils/utils';
-import { NotifyError } from 'src/utils/utils';
-import { Validator } from 'src/utils/validator';
+import { NotifyError } from '../utils/utils';
+import { Validator } from '../utils/validator';
 
 const email = ref('')
 const password = ref('')
@@ -71,20 +70,16 @@ onMounted(() => {
 const submit = async () => {
 	loading.value = true
 	await http.post(
-    new HttpRequest('/user/login', { email: email.value, password: password.value }))
-		.then(() => {
+    new HttpRequest('/login', { email: email.value, password: password.value }))
+		.then((response: any) => {
 			rememberMe.value
 				? localStorage.setItem('email', btoa(email.value))
 				: localStorage.removeItem('email')
+      localStorage.setItem('accessToken', response.data.token)
 			router.push('/')
 		})
 		.catch((error: any) => {
-			if (error.response.status === 401) {
-				invalidCredentials.value = true
 				NotifyError.error(error.message)
-			} else {
-				ShowDialog.show('Erro', error.message)
-			}
 		})
 		.finally(() => {
 			loading.value = false

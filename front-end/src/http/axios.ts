@@ -1,7 +1,6 @@
 import axios from 'axios'
 import HttpRequest from './httpRequest'
 import Http from './http'
-import { HttpError } from './errors/httpError'
 
 const BASE_URL = process.env.BASE_URL
 const MAX_RETRIES = 3
@@ -54,7 +53,7 @@ export class AxiosHttp implements Http {
 
 		try {
 			const response = await axios.post(
-				`${BASE_URL + httpRequest.path}`,
+				`${BASE_URL}${httpRequest.path}`,
 				httpRequest.body,
 				{
 					headers: httpRequest.headers
@@ -140,14 +139,7 @@ export class AxiosHttp implements Http {
 			}
 		}
 
-		if (error.response.data && error.response.data.friendlyMessage && error.response.data.friendlyTitle)
-			throw new HttpError(
-				error.response.status,
-				error.response.data.friendlyTitle,
-				error.response.data.friendlyMessage
-			)
-
-		throw new HttpError()
+		throw error
 	}
 }
 
