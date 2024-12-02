@@ -11,7 +11,7 @@ const router = useRouter();
 
 onMounted(() => {
   if (!localStorage.getItem('accessToken')) {
-    router.push('/login');
+    router.push('/auth/login');
   }
 });
 </script>

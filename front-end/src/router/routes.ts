@@ -7,8 +7,12 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
   },
   {
-    path: '/login',
-    children: [{ path: '', component: () => import('pages/LoginPage.vue') }],
+    path: '/auth',
+    component: () => import('layouts/OuterLayout.vue'),
+    children: [
+      { path: 'login', component: () => import('pages/auth/LoginPage.vue') },
+      { path: 'signup', component: () => import('pages/auth/SignUpPage.vue') },
+    ],
   },
   {
     path: '/:catchAll(.*)*',

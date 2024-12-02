@@ -2,17 +2,6 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-
-          round
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        >
-          <!-- change image on hover-->
-          <q-img :src="!leftDrawerOpen ? 'icons/menu.png' : 'icons/menu-closed.png'" />
-        </q-btn>
 
         <q-toolbar-title class="text-center">
           Reserva de restaurante
@@ -21,41 +10,28 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      :mini="leftDrawerOpen"
-      show-if-above
-      class="animated"
-      :width="150"
-      :model-value="true"
-    >
-      <q-tabs
-        vertical
-        v-model="tab"
-        class="bg-grey-2"
-        active-color="black"
-        indicator-color="black"
-        switch-indicator
-      >
-        <q-route-tab
-          name="home"
-          icon="img:icons/home.png"
-          :label="leftDrawerOpen ? ' ' : 'Home'"
-          to="/"
-        />
+    <q-drawer bordered mini show-if-above class="animated" :mini-width="75" :model-value="true">
+      <q-tabs vertical v-model="tab" class="bg-grey-2" active-color="black" indicator-color="black" switch-indicator>
+        <div class="row full-width flex-center q-ma-md">
+          <q-img fit="fill" width="50%" height="50%" src="/icons/restaurant.png" class="logo__img" />
+        </div>
+        <q-route-tab name="home" icon="img:icons/home.png" to="/">
+          <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" class="text-subtitle2 bg-secondary">
+            Página inicial
+          </q-tooltip>
+        </q-route-tab>
 
-        <q-route-tab
-          name="reservations"
-          icon="img:icons/booking.png"
-          :label="leftDrawerOpen ? ' ' : 'Reservations'"
-          to="/reservations"
-        />
+        <q-route-tab name="reservations" icon="img:icons/booking.png" to="/reservations">
+          <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" class="text-subtitle2 bg-secondary">
+            Reservas
+          </q-tooltip>
+        </q-route-tab>
 
-        <q-route-tab
-          name="menu"
-          icon="img:icons/restaurant.png"
-          :label="leftDrawerOpen ? ' ' : 'Menu'"
-          to="/menu"
-        />
+        <q-route-tab name="menu" icon="img:icons/tray.png" to="/menu">
+          <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" class="text-subtitle2 bg-secondary">
+            Menu
+          </q-tooltip>
+        </q-route-tab>
       </q-tabs>
     </q-drawer>
 
@@ -68,10 +44,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const leftDrawerOpen = ref(false);
 const tab = ref('home');
 
-function toggleLeftDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
 </script>
