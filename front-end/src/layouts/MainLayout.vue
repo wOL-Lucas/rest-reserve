@@ -15,19 +15,19 @@
         <div class="row full-width flex-center q-ma-md">
           <q-img fit="fill" width="50%" height="50%" src="/icons/restaurant.png" class="logo__img" />
         </div>
-        <q-route-tab name="home" icon="img:icons/home.png" to="/">
+        <q-route-tab class="q-pa-md" name="home" icon="img:icons/home.png" to="/">
           <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" class="text-subtitle2 bg-secondary">
             Página inicial
           </q-tooltip>
         </q-route-tab>
 
-        <q-route-tab name="reservations" icon="img:icons/booking.png" to="/reservations">
+        <q-route-tab class="q-pa-md" name="reservations" icon="img:icons/booking.png" to="/reservations">
           <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" class="text-subtitle2 bg-secondary">
             Reservas
           </q-tooltip>
         </q-route-tab>
 
-        <q-route-tab name="menu" icon="img:icons/tray.png" to="/menu">
+        <q-route-tab class="q-pa-md" name="menu" icon="img:icons/tray.png" to="/menu">
           <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" class="text-subtitle2 bg-secondary">
             Menu
           </q-tooltip>
