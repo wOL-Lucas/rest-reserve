@@ -1,5 +1,10 @@
 <template>
-  <q-page class="row flex-start q-pa-lg q-gutter-md">
+  <q-page class="column flex-center q-pa-lg q-gutter-md">
+    <div class="half-width q-gutter-y-md">
+      <q-card class="default-box-shadow big-border-radius scale-on-hover" @click="router.push('/reservations')">
+        <PrimaryButton rounded class="fit" label="Ir para reservas" />
+      </q-card>
+    </div>
     <q-carousel class="half-width min-height-300" animated v-model="slide" navigation infinite :autoplay="autoplay"
       arrows transition-prev="slide-right" transition-next="slide-left" @mouseenter="autoplay = false"
       @mouseleave="autoplay = true">

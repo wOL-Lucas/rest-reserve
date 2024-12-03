@@ -17,7 +17,7 @@ export class Validator {
 	}
 
 	static isValidEmail = (value: string): boolean => {
-		return /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value)
+		return /^[\w.-]+(\+[\w.-]+)?@([\w-]+\.)+[\w-]{2,4}$/.test(value)
 	}
 
 	static isValidPassword = (value: string): boolean => {

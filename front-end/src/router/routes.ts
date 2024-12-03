@@ -13,6 +13,8 @@ const routes: RouteRecordRaw[] = [
         path: '/reservations',
         children: [
           { path: '', component: () => import('pages/reserve/ReservationsPage.vue') },
+          { path: 'list', component: () => import('pages/reserve/ListReservePage.vue') },
+          { path: 'create', component: () => import('pages/reserve/ReserveCreatePage.vue') },
         ],
       },
       {

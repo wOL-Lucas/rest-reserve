@@ -51,7 +51,9 @@ module.exports = configure(function (/* ctx */) {
       },
 
       env: {
-        BASE_URL: process.env.BASE_URL
+        BASE_USERS_URL: process.env.BASE_USERS_URL,
+        BASE_RESERVE_URL: process.env.BASE_RESERVE_URL,
+        BASE_RESTAURANT_URL: process.env.BASE_RESTAURANT_URL,
       },
 
       vueRouterMode: 'hash', // available values: 'hash', 'history'

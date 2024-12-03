@@ -14,6 +14,7 @@ import PrimaryButton from 'src/components/button/PrimaryButton.vue';
 import PersonalInformationForm from 'src/components/form/PersonalInformationForm.vue';
 import { AxiosHttp } from 'src/http/axios';
 import HttpRequest from 'src/http/httpRequest';
+import ApiRoutes from 'src/http/routes';
 import { Customer } from 'src/models/customer';
 import { NotifyError, ShowDialog } from 'src/utils/utils';
 import { ref } from 'vue';
@@ -28,7 +29,7 @@ const http = new AxiosHttp();
 const submitForm = async () => {
   loading.value = true;
   await http.post(
-    new HttpRequest('/users', customer.value.toJson()))
+    new HttpRequest(ApiRoutes.users, customer.value.toJson()))
     .then(() => {
       ShowDialog.show('Sucesso', 'Usuário cadastrado com sucesso!', 'img:/icons/verifica.png');
       router.push('/auth/login')

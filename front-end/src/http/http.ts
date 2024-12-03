@@ -5,5 +5,4 @@ export default interface Http {
     post<T>(httpRequest: HttpRequest, retried?: number): Promise<T>
     put<T>(httpRequest: HttpRequest, retried?: number): Promise<T>
     delete(httpRequest: HttpRequest, retried?: number): Promise<void>
-    refreshToken(): Promise<boolean>
 }

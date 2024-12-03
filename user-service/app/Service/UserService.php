@@ -2,10 +2,8 @@
 
 namespace App\Service;
 
-use App\Models\Role;
 use App\Models\User;
 use App\Rules\ValidRole;
-use App\Service\Interface\AuthServiceInterface;
 use App\Service\Interface\QueuePublisherInterface;
 use App\Service\Interface\UserServiceInterface;
 use Illuminate\Http\Request;
@@ -15,7 +13,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 class UserService implements UserServiceInterface
 {
     private $userRepository;
-    
+
     function __construct(User $userRepository, private QueuePublisherInterface $queuePublisher)
     {
         $this->userRepository = $userRepository;
@@ -63,7 +61,7 @@ class UserService implements UserServiceInterface
 
         $payload = JWTAuth::setToken($request->bearerToken())->getPayload();
         $role = $payload->get('role');
-    
+
         if ($role != $user->role) {
             return response()->json([
                 'status' => 'Failed to authenticate',

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class ReserveService implements ReserveServiceInterface
 {
@@ -41,7 +42,7 @@ class ReserveService implements ReserveServiceInterface
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
- 
+
         $reserve = $this->reserveRepository->create($request->all());
 
         return response()->json($reserve, 201);
@@ -67,6 +68,22 @@ class ReserveService implements ReserveServiceInterface
         $reserve->save();
 
         return response()->json($reserve, 200);
+    }
+
+    public function getAll(Request $request)
+    {
+        if (!$this->validatePermission($request, 'user')) {
+            return response()->json([
+                'status' => 'Failed to authenticate',
+                'message' => 'UNAUTHORIZED',
+            ], 401);
+        }
+
+        $payload = JWTAuth::setToken($request->bearerToken())->getPayload();
+
+        $reserves = $this->reserveRepository->where('user_id', $payload->get('id'))->get();
+
+        return response()->json($reserves, 200);
     }
 
     public function findByUserId(Request $request, $userId)
@@ -99,7 +116,7 @@ class ReserveService implements ReserveServiceInterface
         return response()->json($reserves, 200);
     }
 
-    private function validatePermission(Request $request, String $requiredRole) 
+    private function validatePermission(Request $request, String $requiredRole)
     {
 
         Log::info('validatePermission method called');
@@ -108,7 +125,7 @@ class ReserveService implements ReserveServiceInterface
 
         Log:info($token);
 
-        if (!$token) {  
+        if (!$token) {
             return response()->json([
                 'status' => 'Failed to authenticate',
                 'message' => 'UNAUTHORIZED',

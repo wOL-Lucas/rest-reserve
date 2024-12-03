@@ -33,4 +33,9 @@ class ReserveController extends Controller
     {
         return $this->reserveService->findByRestaurantId($request, $restaurantId);
     }
+
+    public function getAll(Request $request)
+    {
+        return $this->reserveService->getAll($request);
+    }
 }

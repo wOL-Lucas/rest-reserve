@@ -40,6 +40,7 @@ import { AxiosHttp } from 'src/http/axios';
 import HttpRequest from 'src/http/httpRequest';
 import { NotifyError } from '../../utils/utils';
 import { Validator } from '../../utils/validator';
+import ApiRoutes from 'src/http/routes';
 
 const email = ref('')
 const password = ref('')
@@ -58,7 +59,7 @@ onMounted(() => {
 const submit = async () => {
   loading.value = true
   await http.post(
-    new HttpRequest('/login', { email: email.value, password: password.value }))
+    new HttpRequest(ApiRoutes.login, { email: email.value, password: password.value }))
     .then((response: any) => {
       rememberMe.value
         ? localStorage.setItem('email', btoa(email.value))

@@ -10,7 +10,7 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 class AuthService implements AuthServiceInterface
 {
 
-    public function login(Request $request) 
+    public function login(Request $request)
     {
         $request->validate([
             'email' => 'required|string|email',
@@ -19,7 +19,7 @@ class AuthService implements AuthServiceInterface
 
         $credentials = $request->only('email', 'password');
         $token = Auth::attempt($credentials);
-        
+
         if (!$token) {
             return response()->json([
                 'status' => 'Failed to authenticate',
@@ -30,12 +30,13 @@ class AuthService implements AuthServiceInterface
         $user = Auth::user();
         $role = $user->role;
 
-        $customClaims = ['role' => $role];
+        $customClaims = ['role' => $role, 'id' => $user->id];
         $token = JWTAuth::claims($customClaims)->fromUser($user);
 
         return response()->json([
             'token' => $token,
             'type' => 'Bearer',
+            'role' => $role,
         ], 200);
 
     }
@@ -44,18 +45,18 @@ class AuthService implements AuthServiceInterface
     {
         $token = $request->input('token');
         $requiredRole = $request->input('requiredRole');
-        
+
         try {
             $payload = JWTAuth::setToken($token)->getPayload();
             $role = $payload->get('role');
-    
+
             if ($role != $requiredRole) {
                 return response()->json([
                     'status' => 'Failed to authenticate',
                     'message' => 'UNAUTHORIZED',
                 ], 401);
             }
-    
+
             return response()->json([
                 'status' => 'Token is valid',
                 'message' => 'AUTHORIZED',
@@ -67,6 +68,6 @@ class AuthService implements AuthServiceInterface
             ], 401);
         }
     }
-    
+
 
 }

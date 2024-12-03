@@ -18,7 +18,7 @@ class RestaurantService implements RestaurantServiceInterface
         $this->restaurantRepository = $restaurantRepository;
     }
 
-    public function register(Request $request) 
+    public function register(Request $request)
     {
         Log::info('Register method called');
 
@@ -41,7 +41,7 @@ class RestaurantService implements RestaurantServiceInterface
             'address.country' => 'required|string',
             'address.complement' => 'nullable|string',
             'address.number' => 'required|int',
-            'main_image' => 'required'
+            // 'main_image' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -58,8 +58,8 @@ class RestaurantService implements RestaurantServiceInterface
 
         $address = $request->input('address');
         $restaurant->address()->create($address);
-    
-        $this->registerImages($request, $restaurant);
+
+        // $this->registerImages($request, $restaurant);
 
         return response()->json($this->restaurantRepository->find($restaurant->id)->load(['address', 'restaurantImages']), 201);
     }
@@ -81,10 +81,10 @@ class RestaurantService implements RestaurantServiceInterface
     {
         $restaurants = $this->restaurantRepository->with('restaurantImages')->get();
 
-        foreach ($restaurants as $restaurant) {
-            $restaurant->main_image_url = $restaurant->restaurantImages()->where('is_main', true)->first()->image_url;
-            unset($restaurant->restaurantImages);
-        }
+        // foreach ($restaurants as $restaurant) {
+        //     $restaurant->main_image_url = $restaurant->restaurantImages()->where('is_main', true)->first()->image_url;
+        //     unset($restaurant->restaurantImages);
+        // }
 
         return response()->json($restaurants, 200);
     }
@@ -112,7 +112,7 @@ class RestaurantService implements RestaurantServiceInterface
 
         $restaurant = $this->restaurantRepository->find($request->id);
         $restaurant->update($request->all());
-        
+
         return response()->json($restaurant, 200);
     }
 
@@ -145,7 +145,7 @@ class RestaurantService implements RestaurantServiceInterface
         ]);
 
         $expectedFields = [
-            'name', 
+            'name',
             'description',
             'user_id',
             'main_image',
@@ -169,7 +169,7 @@ class RestaurantService implements RestaurantServiceInterface
     }
 
 
-    private function validateImage(Request $request, String $key) 
+    private function validateImage(Request $request, String $key)
     {
         $validator = Validator::make($request->all(), [
             $key => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -193,7 +193,7 @@ class RestaurantService implements RestaurantServiceInterface
         return $imagePath;
     }
 
-    private function validatePermission(Request $request, String $requiredRole) 
+    private function validatePermission(Request $request, String $requiredRole)
     {
 
         Log::info('validatePermission method called');
@@ -202,7 +202,7 @@ class RestaurantService implements RestaurantServiceInterface
 
         Log:info($token);
 
-        if (!$token) {  
+        if (!$token) {
             return response()->json([
                 'status' => 'Failed to authenticate',
                 'message' => 'UNAUTHORIZED',
